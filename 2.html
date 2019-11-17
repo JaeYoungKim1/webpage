@@ -1,19 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <title>WEB1 - CSS</title>
-  <meta charset="utf-8">
-</head>
-<body>
-  <h1><a href="index.html">WEB</a></h1>
-  <ol>
-    <li><a href="1.html">HTML</a></li>
-    <li><a href="2.html">CSS</a></li>
-    <li><a href="3.html">JavaScript</a></li>
-  </ol>
-  <h2>CSS</h2>
-  <p>
-    Cascading Style Sheets (CSS) is a style sheet language used for describing the presentation of a document written in a markup language. Although most often used to set the visual style of web pages and user interfaces written in HTML and XHTML, the language can be applied to any XML document, including plain XML, SVG and XUL, and is applicable to rendering in speech, or on other media. Along with HTML and JavaScript, CSS is a cornerstone technology used by most websites to create visually engaging webpages, user interfaces for web applications, and user interfaces for many mobile applications.
-  </p>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<title>select</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+      <?php
+			$dbHost = "localhost";
+			$dbName = "test";
+			$dbUser = "root";
+			$dbPass = "root";
+
+			$city = null;
+			$office = null;
+			$date = null;
+			$movie = null;
+
+			$DB = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass);
+			?>
+      <div class="city">
+				<ul>
+					<?php
+						$cityq = $DB->query("select distinct 특별시_광역시_도 from 지점");
+						foreach ($cityq as $row) { ?>
+							<li><input type='button' value=<?= $row["특별시_광역시_도"] ?> oneclick= /></li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="office">
+				<ul>
+					<!-- <?php
+						if ($city != null) {
+							$officeq = $DB->query("select 지점명 from 지점 where 특별시_광역시_도 ='$city'");
+							foreach ($officeq as $row) {
+								$tmpoffice = $low["지점명"] ?>
+								<li><input type='button' value='<?= $tmpoffice?>' /></li>
+						<?php }
+						} ?> -->
+				</ul>
+			</div>
+			<div class="date">
+				<ul>
+					<?php
+						$dateq = $DB->query("select distinct 일자 from 영화상영정보");
+						foreach ($dateq as $row) { ?>
+							<li><input type='button' value=<?= $row["일자"] ?> oneclick= /></li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="movie">
+				<ul>
+					<?php
+						$movienum = $DB->query("select distinct 영화번호 from 영화상영정보");
+						foreach ($movienum as $i) {
+							$mnum = $i['영화번호'];
+							$movieq = $DB->query("select 제목 from 영화 where 영화번호='$mnum'");
+							foreach ($movieq as $j) {
+							?>
+								<li><input type='button' value=<?= $j["제목"] ?> oneclick= /></li>
+		  	<?php }
+			      } ?>
+				</ul>
+			</div>
+		</div>
+  </body>
 </html>
