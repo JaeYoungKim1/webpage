@@ -1,20 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <title>WEB1 - HTML</title>
-  <meta charset="utf-8">
-</head>
-<body>
-  <h1><a href="index.html">WEB</a></h1>
-  <ol>
-    <li><a href="1.html">HTML</a></li>
-    <li><a href="2.html">CSS</a></li>
-    <li><a href="3.html">JavaScript</a></li>
-  </ol>
-  <h2>HTML</h2>
-  <p><a href="https://www.w3.org/TR/html5/" target="_blank" title="html5 speicification">Hypertext Markup Language (HTML)</a> is the standard markup language for <strong>creating <u>web</u> pages</strong> and web applications.Web browsers receive HTML documents from a web server or from local storage and render them into multimedia web pages. HTML describes the structure of a web page semantically and originally included cues for the appearance of the document.
-  <img src="coding.jpg" width="100%">
-  </p><p style="margin-top:45px;">HTML elements are the building blocks of HTML pages. With HTML constructs, images and other objects, such as interactive forms, may be embedded into the rendered page. It provides a means to create structured documents by denoting structural semantics for text such as headings, paragraphs, lists, links, quotes and other items. HTML elements are delineated by tags, written using angle brackets.
-  </p>
-</body>
+	<head>
+		<meta charset="utf-8" />
+		<title>db testing</title>
+	</head>
+
+	<body>
+		<div class="wrap">
+      <?php
+			$dbHost = "localhost";
+			$dbName = "test";
+			$dbUser = "root";
+			$dbPass = "root";
+
+			$office = 2;
+			$date = "2019-11-17";
+			$movie = 1;
+
+			$DB = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass);
+			$seat = $DB->query("select 상영관번호, 상영관명, 좌석수 from 상영관 where 지점번호= '$office'");
+			foreach ($seat as $j) {
+				$sang = $j["상영관번호"];
+				$timeq = $DB->query("select 상영정보번호,영화시작시간,영화종료시간 from 영화상영정보 where 지점번호= '$office' and 상영관번호 = '$sang' and  일자= '$date' and 영화번호= '$movie'");
+				foreach ($timeq as $i) {
+					$time = $i["상영정보번호"];
+					$seat = $DB->query("select count(*) from 예매,품목 where 예매.예매번호=품목.예매번호 and 예매.상영정보번호 = '$time' and 품목.품목취소코드 = 'B'");
+					$selctedSeat = $seat-> fetch();
+					$left_seat = $j["좌석수"] - $selctedSeat["count(*)"]; ?>
+					<p>상영관: <?= $j["상영관번호"] ?></p>
+					<p>시작: <?= $i["영화시작시간"] ?></p>
+					<p>남은좌석수: <?= $left_seat ?></p>
+	<?php	}
+			} ?>
+		</div>
+  </body>
 </html>
